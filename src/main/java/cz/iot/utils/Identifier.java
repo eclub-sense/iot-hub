@@ -31,4 +31,11 @@ public class Identifier {
     public int hashCode() {
         return UUID != null ? UUID.hashCode() : 0;
     }
+
+    @Override
+    public String toString() {
+        return "Identifier{" +
+                "UUID='" + UUID + '\'' +
+                '}';
+    }
 }

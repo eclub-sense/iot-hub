@@ -41,7 +41,7 @@ public class WebSocket extends WebSocketAdapter {
 
             if(type.equalsIgnoreCase("NEW") && obj.has("uuid")) {
                 String uuid = obj.get("uuid").getAsString();
-                hub.registerDevice(new Identifier(uuid));
+                hub.registerDevice(new Identifier("0000000"+uuid));
             }
         }else {
             System.out.println("Invalid!");

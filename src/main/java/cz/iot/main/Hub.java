@@ -13,6 +13,7 @@ import cz.iot.utils.Identifier;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 
 import java.util.Scanner;
+import java.util.Set;
 
 
 /**
@@ -37,7 +38,7 @@ public class Hub {
         hubClient = new HubClient(webSocket);
 
         //Setup Data Manager
-        manager = new DataManager(hubClient);
+        manager = new DataManager(hubClient, this);
 
         //Setup collector
         collector = new FakeDataCollector(manager);
@@ -62,6 +63,10 @@ public class Hub {
 
     public boolean deviceExists(Identifier UUID) {
         return devices.contains(UUID);
+    }
+
+    public Set<Identifier> getDevices() {
+        return this.devices;
     }
 
 }

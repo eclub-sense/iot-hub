@@ -14,15 +14,20 @@ import cz.iot.remote.HubClient;
  */
 public class DataManager {
 
-    private HubClient hub;
+    private HubClient client;
+    private Hub hub;
 
-    public DataManager(HubClient hub) {
+    public DataManager(HubClient client, Hub hub) {
+        this.client = client;
         this.hub = hub;
     }
 
-    public void put(Packet packet) {
-        byte[] data = serializePacket(packet);
-        send(data);
+    public synchronized void put(Packet packet) {
+        if(hub.deviceExists(packet.getUUID())) {
+
+            byte[] data = serializePacket(packet);
+            send(data);
+        }
     }
 
     public byte[] serializePacket(Packet packet) {
@@ -38,7 +43,7 @@ public class DataManager {
     }
 
     public synchronized void send(byte[] data) {
-        hub.sendBytes(data);
+        client.sendBytes(data);
     }
 
 }
