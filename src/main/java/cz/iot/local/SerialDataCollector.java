@@ -20,7 +20,6 @@ public class SerialDataCollector implements DataCollector {
     public SerialDataCollector(DataManager manager) {
         this.manager = manager;
         isRunning = true;
-
     }
 
     public void close() {
@@ -28,16 +27,26 @@ public class SerialDataCollector implements DataCollector {
     }
 
     public void run() {
-        System.out.println("jupii");
         initSerialPort();
         while (isRunning) {
+            collectData();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
 
     }
 
     public void collectData() {
-
+        try {
+            writeLine("AT+REQUEST?");
+            System.out.println(readLine());
+        } catch (SerialPortException e) {
+            e.printStackTrace();
+        }
     }
 
     public String[] getPorts() {
@@ -45,42 +54,27 @@ public class SerialDataCollector implements DataCollector {
     }
 
     public void initSerialPort() {
-        /*
         try {
             //serialPort = new SerialPort(getPorts()[0]);
-
             serialPort = new SerialPort("COM4");
-
             serialPort.openPort();
             serialPort.setParams(9600, 8, 1, 0);
-            serialPort.addEventListener(new SerialPortEventListener() {
-                public void serialEvent(SerialPortEvent serialPortEvent) {
-
-                    try {
-                        if (serialPortEvent.getEventType() == 1) {
-
-                            sb.append(serialPort.readString());
-                            int index = sb.toString().indexOf("\r\n");
-                            if (index != -1) {
-                                String data = sb.substring(0, index);
-                                if (hub.getHubPackets().contains(new Packet(data.split(" ")[0]))) {
-                                    hub.sendString("UUID:" + data.split(" ")[0] + " DATA:" + data.split(" ")[1]);
-                                }
-                                sb = new StringBuilder(sb.toString().substring(index + 2));
-                            }
-
-                        }
-                    } catch (SerialPortException e) {
-                        e.printStackTrace();
-                        return;
-                    }
-                }
-            });
         } catch (Exception e) {
             e.printStackTrace();
             return;
-        }*/
+        }
     }
 
+    private void writeLine(String message) throws SerialPortException {
+        serialPort.writeString(message+"\r\n");
+    }
+
+    public String readLine(){
+        StringBuilder sb = new StringBuilder();
+        /*while(serialPort.getInputBufferBytesCount()>0){
+
+        }*/
+        return null;
+    }
 
 }

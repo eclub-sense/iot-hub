@@ -7,4 +7,5 @@ public interface DataCollector extends Runnable {
 
     void collectData();
 
+    void close();
 }
