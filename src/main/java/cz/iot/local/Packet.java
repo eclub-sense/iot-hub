@@ -25,4 +25,12 @@ public class Packet {
     public byte[] getByteData()  {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "Packet{" +
+                "UUID=" + UUID +
+                ", payload='" + payload + '\'' +
+                '}';
+    }
 }

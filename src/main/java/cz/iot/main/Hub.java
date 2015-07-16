@@ -1,5 +1,7 @@
 package cz.iot.main;
 
+import cz.iot.local.DataCollector;
+import cz.iot.local.FakeDataCollector;
 import cz.iot.local.Packet;
 import cz.iot.local.SerialDataCollector;
 import cz.iot.remote.HubClient;
@@ -19,7 +21,7 @@ public class Hub {
 
     private HubClient hubClient;
     private ConcurrentHashSet<Identifier> devices = new ConcurrentHashSet<>();
-    private SerialDataCollector collector;
+    private DataCollector collector;
     private WebSocket webSocket;
     private HubServer server;
     private DataManager manager;
@@ -36,7 +38,7 @@ public class Hub {
         manager = new DataManager(this);
 
         //Setup collector
-        collector = new SerialDataCollector(manager);
+        collector = new FakeDataCollector(manager);
 
         new Thread(server).start();
         new Thread(hubClient).start();
