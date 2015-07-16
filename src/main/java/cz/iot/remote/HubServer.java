@@ -30,7 +30,7 @@ public class HubServer implements Runnable{
 
         SocketHandler handler = new SocketHandler(webSocket);
         ContextHandler context = new ContextHandler();
-        context.setContextPath("/events/*");
+        context.setContextPath("/events");
         context.setHandler(handler);
         server.setHandler(context);
 

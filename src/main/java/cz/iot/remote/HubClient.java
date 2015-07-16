@@ -68,12 +68,13 @@ public class HubClient implements Runnable {
         }
     }
 
-    public void sendBytes(byte[] bytes) {
+    public synchronized void sendBytes(byte[] bytes) {
         try {
             if(session == null)
                 setupSession();
 
-            session.getRemote().sendBytes(ByteBuffer.wrap(bytes));
+            if(session.isOpen())
+                session.getRemote().sendBytes(ByteBuffer.wrap(bytes));
         } catch (IOException e) {
             Constants.LOGGER.log(Level.INFO, "Could not connect to URI!");
         }

@@ -18,12 +18,12 @@ public class Packet {
 
     //TO-DO
 
-    public String getJSONData() {
-        return null;
+    public Identifier getUUID() {
+        return UUID;
     }
 
-    public byte[] getByteData()  {
-        return null;
+    public String getPayload() {
+        return payload;
     }
 
     @Override

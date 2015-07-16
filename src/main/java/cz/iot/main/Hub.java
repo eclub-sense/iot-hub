@@ -12,6 +12,8 @@ import cz.iot.utils.DataManager;
 import cz.iot.utils.Identifier;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 
+import java.util.Scanner;
+
 
 /**
  * Class representing a HUB
@@ -35,7 +37,7 @@ public class Hub {
         hubClient = new HubClient(webSocket);
 
         //Setup Data Manager
-        manager = new DataManager(this);
+        manager = new DataManager(hubClient);
 
         //Setup collector
         collector = new FakeDataCollector(manager);
@@ -43,9 +45,18 @@ public class Hub {
         new Thread(server).start();
         new Thread(hubClient).start();
         new Thread(collector).start();
+
+
+        //Test
+        Scanner scan = new Scanner(System.in);
+        while(true) {
+            if(scan.next().equalsIgnoreCase("send"))
+                manager.put(new Packet("00000001", "654564598797897896767545"));
+        }
     }
 
     public void registerDevice(Identifier UUID) {
+        System.out.println("Registering device with uuid: "+ UUID.getID());
         this.devices.add(UUID);
     }
 
@@ -53,7 +64,4 @@ public class Hub {
         return devices.contains(UUID);
     }
 
-    public void sendData(byte[] data) {
-        hubClient.sendBytes(data);
-    }
 }
