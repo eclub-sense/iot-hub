@@ -1,11 +1,9 @@
 package cz.iot.local;
 
-import cz.iot.main.Hub;
-import cz.iot.remote.HubClient;
 import cz.iot.utils.DataManager;
 import jssc.*;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * Created by Michal on 13. 7. 2015.
@@ -20,6 +18,7 @@ public class SerialDataCollector implements DataCollector {
     public SerialDataCollector(DataManager manager) {
         this.manager = manager;
         isRunning = true;
+        initSerialPort();
     }
 
     public void close() {
@@ -27,11 +26,11 @@ public class SerialDataCollector implements DataCollector {
     }
 
     public void run() {
-        initSerialPort();
+
         while (isRunning) {
             collectData();
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -43,8 +42,28 @@ public class SerialDataCollector implements DataCollector {
     public void collectData() {
         try {
             writeLine("AT+REQUEST?");
-            System.out.println(readLine());
-        } catch (SerialPortException e) {
+            String data = readLine();
+            if (data.startsWith("AT+REQUEST START")) {
+                ArrayList<Packet> packets = new ArrayList<>();
+                int count = Integer.parseInt(data.split(",")[1]);
+                for (int i = 0; i < count; i++) {
+                    data = readLine();
+                    packets.add(new Packet(data.substring(0, 8), data.substring(8)));
+                }
+                data = readLine();
+                if (!data.equalsIgnoreCase("AT+REQUEST END")) {
+                    throw new Exception("serial line error - bad end");
+                }
+                if (packets.size() > 0) {
+                    for (Packet p : packets) {
+                        System.out.println(p);
+                        manager.put(p);
+                    }
+                }
+            } else {
+                throw new Exception("serial line error - bad start");
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -59,6 +78,29 @@ public class SerialDataCollector implements DataCollector {
             serialPort = new SerialPort("COM4");
             serialPort.openPort();
             serialPort.setParams(9600, 8, 1, 0);
+            serialPort.addEventListener(new SerialPortEventListener() {
+                @Override
+                public void serialEvent(SerialPortEvent serialPortEvent) {
+                    if (serialPortEvent.getEventType() == 1) {
+                        try {
+                            synchronized (serialPort) {
+                                sb.append(serialPort.readString());
+                            }
+                        } catch (SerialPortException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+
+            while (!sb.toString().endsWith("AT+UNKNOWN\r\n")) {
+                writeLine("ahoj");
+                Thread.sleep(80);
+            }
+            synchronized (serialPort) {
+                sb = new StringBuilder();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -66,15 +108,23 @@ public class SerialDataCollector implements DataCollector {
     }
 
     private void writeLine(String message) throws SerialPortException {
-        serialPort.writeString(message+"\r\n");
+        serialPort.writeString(message + "\r\n");
     }
 
-    public String readLine(){
-        StringBuilder sb = new StringBuilder();
-        /*while(serialPort.getInputBufferBytesCount()>0){
-
-        }*/
-        return null;
+    public String readLine() {
+        while (sb.indexOf("\r\n") == -1) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        String data = "";
+        synchronized (serialPort) {
+            data = sb.substring(0, sb.indexOf("\r\n"));
+            sb = new StringBuilder(sb.substring(sb.indexOf("\r\n") + 2));
+        }
+        return data;
     }
 
 }
