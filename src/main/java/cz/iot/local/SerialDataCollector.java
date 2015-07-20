@@ -2,6 +2,7 @@ package cz.iot.local;
 
 import cz.iot.utils.DataManager;
 import jssc.*;
+import org.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;
 
 import java.util.ArrayList;
 
@@ -55,6 +56,7 @@ public class SerialDataCollector implements DataCollector {
                     throw new Exception("serial line error - bad end");
                 }
                 if (packets.size() > 0) {
+                    System.out.println("=====PACKETS=====");
                     for (Packet p : packets) {
                         System.out.println(p);
                         manager.put(p);
@@ -64,7 +66,7 @@ public class SerialDataCollector implements DataCollector {
                 throw new Exception("serial line error - bad start");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -77,7 +79,7 @@ public class SerialDataCollector implements DataCollector {
             //serialPort = new SerialPort(getPorts()[0]);
             serialPort = new SerialPort("COM4");
             serialPort.openPort();
-            serialPort.setParams(9600, 8, 1, 0);
+            serialPort.setParams(19200, 8, 1, 0);
             serialPort.addEventListener(new SerialPortEventListener() {
                 @Override
                 public void serialEvent(SerialPortEvent serialPortEvent) {
