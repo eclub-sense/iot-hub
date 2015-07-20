@@ -1,14 +1,11 @@
 package cz.iot.remote;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import cz.iot.local.Packet;
 import cz.iot.main.Hub;
 import cz.iot.messages.HubMessage;
-import cz.iot.messages.HubMessageType;
-import cz.iot.messages.MessageInstanceCreator;
+import cz.iot.messages.MessageManager;
 import cz.iot.utils.Constants;
-import cz.iot.utils.Identifier;
+import cz.iot.local.Identifier;
+import cz.iot.utils.DeviceStorage;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 
@@ -19,11 +16,9 @@ import java.util.logging.Level;
  */
 public class WebSocket extends WebSocketAdapter {
 
-    private Hub hub;
     private HubClient client;
 
-    public WebSocket(Hub hub, HubClient client) {
-        this.hub = hub;
+    public WebSocket(HubClient client) {
         this.client = client;
     }
 
@@ -38,16 +33,20 @@ public class WebSocket extends WebSocketAdapter {
         super.onWebSocketText(message);
         System.out.println("Received TEXT message: " + message);
 
-        HubMessage msg = MessageInstanceCreator.createMsgInstance(message);
+        HubMessage msg = MessageManager.messageFromJSON(message);
         System.out.println(msg);
         if(msg != null) {
             switch (msg.getType()) {
                 case NEW:
-                    hub.registerDevice(new Identifier(msg.getUuid()));
+                    //Register new device
+                    DeviceStorage.getInstance().registerDevice(new Identifier(msg.getUuid()));
                     break;
                 case LOGIN_ACK:
-                        System.out.println("!!!!!! UUID: "+msg.getUuid());
-                        Constants.LOGGER.log(Level.INFO, "Logged into the cloud!");
+                        //Acknowledgement of the login
+                        if(msg.getUuid().equalsIgnoreCase(Constants.HUB_UUID))
+                            Constants.LOGGER.log(Level.INFO, "Logged into the cloud!");
+                        else
+                            Constants.LOGGER.log(Level.WARNING, "Hub UUID does not match! Ack did not pass!");
                     break;
 
             }

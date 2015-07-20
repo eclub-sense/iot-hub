@@ -1,17 +1,13 @@
 package cz.iot.remote;
 
-import cz.iot.local.Packet;
-import cz.iot.local.SerialDataCollector;
 import cz.iot.utils.Constants;
-import org.eclipse.jetty.util.ConcurrentHashSet;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 
 import java.io.IOException;
-import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.nio.ByteBuffer;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -27,6 +23,7 @@ public class HubClient implements Runnable {
     private WebSocket webSocket;
 
     public HubClient(WebSocket webSocket) {
+        //Target for the client websocket
         uriToServer = URI.create("ws://"+Constants.SERVER_LINK+"/events/");
         this.webSocket = webSocket;
     }
@@ -40,7 +37,6 @@ public class HubClient implements Runnable {
             Constants.LOGGER.log(Level.INFO, "Could not start the client!");
             return false;
         }
-
         return true;
     }
 
@@ -58,44 +54,35 @@ public class HubClient implements Runnable {
     public synchronized void sendString(String message) {
         try {
 
+            //If we are not connected setup new session
             if(session == null)
                 setupSession();
 
+            //Check if the session is open
             if(session.isOpen())
                 session.getRemote().sendString(message);
+            else
+                Constants.LOGGER.log(Level.WARNING, "No session opened. Could not send data!");
 
             } catch (IOException e) {
-            Constants.LOGGER.log(Level.INFO, "Could not connect to URI!");
+            Constants.LOGGER.log(Level.WARNING, "Could not connect to URI!");
         }
     }
 
-    public synchronized void sendBytes(byte[] bytes) {
-        try {
-            if(session == null)
-                setupSession();
-
-            if(session.isOpen())
-                session.getRemote().sendBytes(ByteBuffer.wrap(bytes));
-        } catch (IOException e) {
-            Constants.LOGGER.log(Level.INFO, "Could not connect to URI!");
-        }
-    }
-
-    public synchronized void setupSession(){
+    public void setupSession(){
 
         try {
+            //Setup the session
             Future<Session> got = client.connect(webSocket, uriToServer);
             session = got.get();
-        } catch (InterruptedException e) {
-            Constants.LOGGER.log(Level.INFO, "Connection interrupted!");
-        } catch (ExecutionException e) {
-            Constants.LOGGER.log(Level.INFO, "Connection lost!");
-        } catch (IOException e) {
-            Constants.LOGGER.log(Level.INFO, "Could not conenct");
+        } catch (Throwable t) {
+            Constants.LOGGER.log(Level.WARNING, "Could not Set up session!");
+            if(Constants.PRINT_STACKTRACE)
+                t.printStackTrace();
         }
     }
 
-    public synchronized void closeSession() {
+    public void closeSession() {
         if(session != null)
             session.close();
     }

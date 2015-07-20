@@ -4,23 +4,23 @@ import com.google.gson.annotations.Expose;
 
 public class HubMessage {
 
-	@Expose protected HubMessageType type;
+	@Expose protected MessageType type;
 	@Expose protected String uuid;
 	
 	public HubMessage() {
 		super();
 	}
 
-	public HubMessage(HubMessageType type, String UUID) {
+	public HubMessage(MessageType type, String UUID) {
 		this.type = type;
 		this.uuid = UUID;
 	}
 	
-	public HubMessageType getType() {
+	public MessageType getType() {
 		return type;
 	}
 	
-	public void setType(HubMessageType type) {
+	public void setType(MessageType type) {
 		this.type = type;
 	}
 	

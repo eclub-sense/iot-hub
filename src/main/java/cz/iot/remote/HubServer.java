@@ -36,7 +36,7 @@ public class HubServer implements Runnable{
 
         try {
             server.start();
-            server.dump(System.err);
+            //server.dump(System.err);
             server.join();
         } catch (Exception e) {
             Constants.LOGGER.log(Level.INFO, "Could not start the server!");

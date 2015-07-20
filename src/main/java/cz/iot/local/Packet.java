@@ -1,8 +1,6 @@
 package cz.iot.local;
 
 
-import cz.iot.utils.Identifier;
-
 /**
  * Created by Michal on 13. 7. 2015.
  */

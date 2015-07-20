@@ -2,7 +2,9 @@ package cz.iot.main;
 
 import cz.iot.messages.*;
 import cz.iot.utils.Constants;
+import cz.iot.utils.DeviceStorage;
 
+import javax.activation.DataSource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,14 +23,14 @@ public class App {
         try {
             while(!(line = reader.readLine()).equalsIgnoreCase("kill")) {
                 if (line.equalsIgnoreCase("login")) {
-                    hub.getClient().sendString(MessageInstanceCreator.jsonRepresentation
+                    hub.getClient().sendString(MessageManager.JSONFromMessage
                             (new HubLoginMsg(Constants.USERNAME, Constants.PASSWORD)));
                 } else if (line.equalsIgnoreCase("reconnect")) {
                     hub.getClient().setupSession();
                 } else if (line.equalsIgnoreCase("close")) {
                     hub.getClient().closeSession();
                 } else if (line.equalsIgnoreCase("list")) {
-                    System.out.println(hub.getDevices());
+                    System.out.println(DeviceStorage.getInstance().getDevices());
                 }
 
 
@@ -36,5 +38,8 @@ public class App {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        hub.getClient().closeSession();
+        hub.getClient().close();
     }
 }

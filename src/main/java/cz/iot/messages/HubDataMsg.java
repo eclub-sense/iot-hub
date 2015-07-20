@@ -7,8 +7,8 @@ public class HubDataMsg extends HubMessage {
 	
 	@Expose private String data;
 
-	public HubDataMsg(String data) {
-		super(HubMessageType.DATA, Constants.HUB_UUID);
+	public HubDataMsg(String sensorUUID, String data) {
+		super(MessageType.DATA, sensorUUID);
 		this.data = data;
 	}
 	

@@ -17,6 +17,7 @@ public class Constants {
     public static final String SERVER_LINK          = "192.168.201.222:8080";
     public static final boolean CONNECT_ON_START    = true;
     //public static final String SERVER_LINK  = "localhost:2555";
+    public static final boolean PRINT_STACKTRACE    = false;
 
     //LOGIN
     public static String HUB_UUID = "111";

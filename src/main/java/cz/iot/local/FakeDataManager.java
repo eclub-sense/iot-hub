@@ -1,6 +1,6 @@
 package cz.iot.local;
 
-import cz.iot.utils.DataManager;
+import cz.iot.utils.PacketManager;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -8,9 +8,9 @@ import java.util.Random;
 /**
  * Created by Tom on 16. 7. 2015.
  */
-public class FakeDataCollector implements DataCollector{
+public class FakeDataManager implements DataManager {
     private boolean isRunning = true;
-    private DataManager manager;
+    private PacketManager manager;
 
     Packet p1 = new Packet("00000001","0041FF000000434D0000000000000000000000000000000000000000");
     Packet p2 = new Packet("00000001","0041FF0000002A820000000000000000000000000000000000000000");
@@ -25,7 +25,7 @@ public class FakeDataCollector implements DataCollector{
     private ArrayList<Packet> packetArrayList = new ArrayList<>();
 
 
-    public FakeDataCollector(DataManager manager) {
+    public FakeDataManager(PacketManager manager) {
         this.manager = manager;
         packetArrayList.add(p1);
         packetArrayList.add(p2);

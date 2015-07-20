@@ -9,7 +9,7 @@ public class HubLoginMsg extends HubMessage{
 	@Expose private String password;
 
 	public HubLoginMsg(String username, String password) {
-		super(HubMessageType.LOGIN, Constants.HUB_UUID);
+		super(MessageType.LOGIN, Constants.HUB_UUID);
 		this.username = username;
 		this.password = password;
 	}

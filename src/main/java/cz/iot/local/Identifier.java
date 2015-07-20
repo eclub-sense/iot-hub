@@ -1,4 +1,4 @@
-package cz.iot.utils;
+package cz.iot.local;
 
 /**
  * Created by Michal on 16. 7. 2015.

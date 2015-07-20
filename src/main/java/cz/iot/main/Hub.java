@@ -1,22 +1,16 @@
 package cz.iot.main;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-import cz.iot.local.DataCollector;
-import cz.iot.local.FakeDataCollector;
-import cz.iot.local.SerialDataCollector;
-import cz.iot.messages.HubLoginMsg;
-import cz.iot.messages.MessageInstanceCreator;
+import cz.iot.local.DataManager;
+import cz.iot.local.FakeDataManager;
+import cz.iot.local.SerialDataManager;
 import cz.iot.remote.HubClient;
 import cz.iot.remote.HubServer;
 import cz.iot.remote.WebSocket;
 import cz.iot.utils.Constants;
-import cz.iot.utils.DataManager;
-import cz.iot.utils.Identifier;
+import cz.iot.utils.PacketManager;
+import cz.iot.local.Identifier;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Set;
 
 
@@ -28,45 +22,31 @@ public class Hub {
 
     private HubClient hubClient;
     private ConcurrentHashSet<Identifier> devices = new ConcurrentHashSet<>();
-    private DataCollector collector;
+    private DataManager manager;
     private WebSocket webSocket;
     private HubServer server;
-    private DataManager manager;
+    private PacketManager packetManager;
 
     public Hub(String UUID, int port, String username, String password) {
 
         Constants.setTestData(UUID, port, username, password);
 
         //Setup WebSocket and Server
-        webSocket = new WebSocket(this,hubClient);
+        webSocket = new WebSocket(hubClient);
         server = new HubServer(Constants.PORT, webSocket);
         //Setup Client
         hubClient = new HubClient(webSocket);
 
         //Setup Data Manager
-        manager = new DataManager(hubClient, this);
+        packetManager = new PacketManager(hubClient);
 
         //Setup collector
-        collector = new SerialDataCollector(manager);
+        manager = new FakeDataManager(packetManager);
 
         new Thread(server).start();
         new Thread(hubClient).start();
-        new Thread(collector).start();
-        System.out.println("Running hub: "+Constants.HUB_UUID);
+        new Thread(manager).start();
 
-    }
-
-    public void registerDevice(Identifier UUID) {
-        System.out.println("Registering device with uuid: "+ UUID.getID());
-        this.devices.add(UUID);
-    }
-
-    public boolean deviceExists(Identifier UUID) {
-        return devices.contains(UUID);
-    }
-
-    public Set<Identifier> getDevices() {
-        return this.devices;
     }
 
     public HubClient getClient() {

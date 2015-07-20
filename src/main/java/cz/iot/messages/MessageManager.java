@@ -6,9 +6,9 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class MessageInstanceCreator {
+public class MessageManager {
 
-	public static HubMessage createMsgInstance(String json) {
+	public static HubMessage messageFromJSON(String json) {
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		JSONObject jsonObject;
 		Object type = null;
@@ -25,7 +25,7 @@ public class MessageInstanceCreator {
 		}
 	}
 
-	public static String jsonRepresentation(HubMessage hubMessage) {
+	public static String JSONFromMessage(HubMessage hubMessage) {
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		String json = gson.toJson(hubMessage);
 		return json;

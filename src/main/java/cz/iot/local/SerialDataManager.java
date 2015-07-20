@@ -1,22 +1,21 @@
 package cz.iot.local;
 
-import cz.iot.utils.DataManager;
+import cz.iot.utils.PacketManager;
 import jssc.*;
-import org.eclipse.jdt.internal.compiler.lookup.SourceTypeBinding;
 
 import java.util.ArrayList;
 
 /**
  * Created by Michal on 13. 7. 2015.
  */
-public class SerialDataCollector implements DataCollector {
+public class SerialDataManager implements DataManager {
 
     private SerialPort serialPort;
     private boolean isRunning;
-    private DataManager manager;
+    private PacketManager manager;
     private StringBuilder sb = new StringBuilder();
 
-    public SerialDataCollector(DataManager manager) {
+    public SerialDataManager(PacketManager manager) {
         this.manager = manager;
         isRunning = true;
         initSerialPort();
