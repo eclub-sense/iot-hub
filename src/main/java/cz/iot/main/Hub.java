@@ -1,9 +1,11 @@
 package cz.iot.main;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import cz.iot.local.DataCollector;
 import cz.iot.local.FakeDataCollector;
-import cz.iot.local.Packet;
-import cz.iot.local.SerialDataCollector;
 import cz.iot.remote.HubClient;
 import cz.iot.remote.HubServer;
 import cz.iot.remote.WebSocket;
@@ -12,6 +14,9 @@ import cz.iot.utils.DataManager;
 import cz.iot.utils.Identifier;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -49,10 +54,21 @@ public class Hub {
 
 
         //Test
-        Scanner scan = new Scanner(System.in);
-        while(true) {
-            if(scan.next().equalsIgnoreCase("send"))
-                manager.put(new Packet("00000001", "654564598797897896767545"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String line;
+        try {
+            while(!(line = reader.readLine()).equalsIgnoreCase("kill")) {
+                    if (line.equalsIgnoreCase("send")) {
+                        hubClient.sendString(Constants.loginMessage);
+                    } else if (line.equalsIgnoreCase("reconnect")) {
+                        hubClient.setupSession();
+                    } else if (line.equalsIgnoreCase("close")) {
+                        hubClient.closeSession();
+                    }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -1,6 +1,7 @@
 package cz.iot.main;
 
 import com.google.gson.*;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import cz.iot.local.Packet;
 import cz.iot.local.SerialDataCollector;
 import cz.iot.remote.HubClient;
@@ -19,6 +20,7 @@ import java.util.Set;
  */
 public class App {
     public static void main(String[] args) {
+        Constants.config();
         new Hub();
     }
 }

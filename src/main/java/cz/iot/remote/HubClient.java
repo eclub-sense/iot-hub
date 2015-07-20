@@ -24,8 +24,6 @@ public class HubClient implements Runnable {
     private URI uriToServer;
     private Session session;
     private WebSocket webSocket;
-    //private ConcurrentHashSet<Packet> hubPackets = new ConcurrentHashSet<Packet>();
-    //private SerialDataCollector collector = new SerialDataCollector(this);
 
     public HubClient(WebSocket webSocket) {
         uriToServer = URI.create("ws://"+Constants.SERVER_LINK+"/events/");
@@ -62,7 +60,9 @@ public class HubClient implements Runnable {
             if(session == null)
                 setupSession();
 
-            session.getRemote().sendString(message);
+            if(session.isOpen())
+                session.getRemote().sendString(message);
+
             } catch (IOException e) {
             Constants.LOGGER.log(Level.INFO, "Could not connect to URI!");
         }

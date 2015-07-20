@@ -25,12 +25,12 @@ public class DataManager {
     public synchronized void put(Packet packet) {
         if(hub.deviceExists(packet.getUUID())) {
 
-            byte[] data = serializePacket(packet);
+            String data = serializePacket(packet);
             send(data);
         }
     }
 
-    public byte[] serializePacket(Packet packet) {
+    public String serializePacket(Packet packet) {
 
         JsonObject jsonPacket = new JsonObject();
         jsonPacket.addProperty("type", "WRITE");
@@ -39,11 +39,11 @@ public class DataManager {
 
         Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
 
-        return gson.toJson(jsonPacket).getBytes();
+        return gson.toJson(jsonPacket);
     }
 
-    public synchronized void send(byte[] data) {
-        client.sendBytes(data);
+    public synchronized void send(String data) {
+        client.sendString(data);
     }
 
 }
