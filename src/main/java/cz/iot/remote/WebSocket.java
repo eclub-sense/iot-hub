@@ -4,9 +4,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import cz.iot.local.Packet;
 import cz.iot.main.Hub;
+import cz.iot.messages.HubMessage;
+import cz.iot.messages.HubMessageType;
+import cz.iot.messages.MessageInstanceCreator;
+import cz.iot.utils.Constants;
 import cz.iot.utils.Identifier;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
+
+import java.util.logging.Level;
 
 /**
  * Created by Michal on 12. 7. 2015.
@@ -32,19 +38,19 @@ public class WebSocket extends WebSocketAdapter {
         super.onWebSocketText(message);
         System.out.println("Received TEXT message: " + message);
 
-        //Recieve message
-        JsonParser parser = new JsonParser();
-        JsonObject obj = (JsonObject) parser.parse(message);
+        HubMessage msg = MessageInstanceCreator.createMsgInstance(message);
+        System.out.println(msg);
+        if(msg != null) {
+            switch (msg.getType()) {
+                case NEW:
+                    hub.registerDevice(new Identifier(msg.getUuid()));
+                    break;
+                case LOGIN_ACK:
+                        System.out.println("!!!!!! UUID: "+msg.getUuid());
+                        Constants.LOGGER.log(Level.INFO, "Logged into the cloud!");
+                    break;
 
-        if(obj.has("type")) {
-            String type = obj.get("type").getAsString();
-
-            if(type.equalsIgnoreCase("NEW") && obj.has("uuid")) {
-                String uuid = obj.get("uuid").getAsString();
-                hub.registerDevice(new Identifier("0000000"+uuid));
             }
-        }else {
-            System.out.println("Invalid!");
         }
 
     }

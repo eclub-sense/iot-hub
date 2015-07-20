@@ -24,7 +24,6 @@ public class DataManager {
 
     public synchronized void put(Packet packet) {
         if(hub.deviceExists(packet.getUUID())) {
-
             String data = serializePacket(packet);
             send(data);
         }

@@ -19,13 +19,13 @@ public class MessageInstanceCreator {
 			e.printStackTrace();
 		}
 		switch ((String)type) {
-		case "DATA" : return gson.fromJson(json, HubDataMsg.class);
-		case "LOGIN" : return gson.fromJson(json, HubLoginMsg.class);
-		default : return null;
+			case "NEW" : return gson.fromJson(json, HubMessage.class);
+			case "LOGIN_ACK" :  return gson.fromJson(json, HubMessage.class);
+			default : return null;
 		}
 	}
 
-	public static String createJsonRepresentation(HubMessage hubMessage) {
+	public static String jsonRepresentation(HubMessage hubMessage) {
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		String json = gson.toJson(hubMessage);
 		return json;

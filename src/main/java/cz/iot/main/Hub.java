@@ -3,6 +3,7 @@ package cz.iot.main;
 import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import cz.iot.local.DataCollector;
 import cz.iot.local.FakeDataCollector;
+import cz.iot.local.SerialDataCollector;
 import cz.iot.messages.HubLoginMsg;
 import cz.iot.messages.MessageInstanceCreator;
 import cz.iot.remote.HubClient;
@@ -46,7 +47,7 @@ public class Hub {
         manager = new DataManager(hubClient, this);
 
         //Setup collector
-        collector = new FakeDataCollector(manager);
+        collector = new SerialDataCollector(manager);
 
         new Thread(server).start();
         new Thread(hubClient).start();

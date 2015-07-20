@@ -56,9 +56,9 @@ public class SerialDataCollector implements DataCollector {
                     throw new Exception("serial line error - bad end");
                 }
                 if (packets.size() > 0) {
-                    System.out.println("=====PACKETS=====");
+                    //System.out.println("=====PACKETS=====");
                     for (Packet p : packets) {
-                        System.out.println(p);
+                        //System.out.println(p);
                         manager.put(p);
                     }
                 }
@@ -77,7 +77,7 @@ public class SerialDataCollector implements DataCollector {
     public void initSerialPort() {
         try {
             //serialPort = new SerialPort(getPorts()[0]);
-            serialPort = new SerialPort("COM4");
+            serialPort = new SerialPort("COM5");
             serialPort.openPort();
             serialPort.setParams(19200, 8, 1, 0);
             serialPort.addEventListener(new SerialPortEventListener() {
