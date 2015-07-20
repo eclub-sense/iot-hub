@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import cz.iot.local.DataCollector;
 import cz.iot.local.FakeDataCollector;
+import cz.iot.local.SerialDataCollector;
 import cz.iot.remote.HubClient;
 import cz.iot.remote.HubServer;
 import cz.iot.remote.WebSocket;
@@ -46,7 +47,7 @@ public class Hub {
         manager = new DataManager(hubClient, this);
 
         //Setup collector
-        collector = new FakeDataCollector(manager);
+        collector = new SerialDataCollector(manager);
 
         new Thread(server).start();
         new Thread(hubClient).start();
