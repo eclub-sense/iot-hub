@@ -33,7 +33,7 @@ public class DataManager {
     public String serializePacket(Packet packet) {
 
         JsonObject jsonPacket = new JsonObject();
-        jsonPacket.addProperty("type", "WRITE");
+        jsonPacket.addProperty("type", "DATA");
         jsonPacket.addProperty("uuid", packet.getUUID().getID());
         jsonPacket.addProperty("data", packet.getPayload());
 
