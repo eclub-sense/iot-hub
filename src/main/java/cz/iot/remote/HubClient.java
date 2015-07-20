@@ -8,6 +8,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.Set;
@@ -86,11 +87,11 @@ public class HubClient implements Runnable {
             Future<Session> got = client.connect(webSocket, uriToServer);
             session = got.get();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Constants.LOGGER.log(Level.INFO, "Connection interrupted!");
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            Constants.LOGGER.log(Level.INFO, "Connection lost!");
         } catch (IOException e) {
-            e.printStackTrace();
+            Constants.LOGGER.log(Level.INFO, "Could not conenct");
         }
     }
 

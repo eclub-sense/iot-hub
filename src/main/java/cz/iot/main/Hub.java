@@ -1,12 +1,10 @@
 package cz.iot.main;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import cz.iot.local.DataCollector;
 import cz.iot.local.FakeDataCollector;
-import cz.iot.local.SerialDataCollector;
+import cz.iot.messages.HubLoginMsg;
+import cz.iot.messages.MessageInstanceCreator;
 import cz.iot.remote.HubClient;
 import cz.iot.remote.HubServer;
 import cz.iot.remote.WebSocket;
@@ -18,7 +16,6 @@ import org.eclipse.jetty.util.ConcurrentHashSet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
 import java.util.Set;
 
 
@@ -35,7 +32,9 @@ public class Hub {
     private HubServer server;
     private DataManager manager;
 
-    public Hub() {
+    public Hub(String UUID, int port, String username, String password) {
+
+        Constants.setTestData(UUID, port, username, password);
 
         //Setup WebSocket and Server
         webSocket = new WebSocket(this,hubClient);
@@ -47,30 +46,13 @@ public class Hub {
         manager = new DataManager(hubClient, this);
 
         //Setup collector
-        collector = new SerialDataCollector(manager);
+        collector = new FakeDataCollector(manager);
 
         new Thread(server).start();
         new Thread(hubClient).start();
         new Thread(collector).start();
+        System.out.println("Running hub: "+Constants.HUB_UUID);
 
-
-        //Test
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String line;
-        try {
-            while(!(line = reader.readLine()).equalsIgnoreCase("kill")) {
-                    if (line.equalsIgnoreCase("send")) {
-                        hubClient.sendString(Constants.loginMessage);
-                    } else if (line.equalsIgnoreCase("reconnect")) {
-                        hubClient.setupSession();
-                    } else if (line.equalsIgnoreCase("close")) {
-                        hubClient.closeSession();
-                    }
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void registerDevice(Identifier UUID) {
@@ -84,6 +66,10 @@ public class Hub {
 
     public Set<Identifier> getDevices() {
         return this.devices;
+    }
+
+    public HubClient getClient() {
+        return hubClient;
     }
 
 }

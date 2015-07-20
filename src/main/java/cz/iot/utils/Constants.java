@@ -12,26 +12,22 @@ import java.util.logging.Logger;
  */
 public class Constants {
 
-    public static final int PORT                    = 2555;
+    public static int PORT                          = 2555;
     public static final Logger LOGGER               = Logger.getLogger("Server logger");
     public static final String SERVER_LINK          = "192.168.201.222:8080";
     public static final boolean CONNECT_ON_START    = true;
     //public static final String SERVER_LINK  = "localhost:2555";
 
     //LOGIN
-    public static final String HUB_UUID = "111";
-    public static final String USERNAME = "User";
-    public static final String PASSWORD = "123";
-    public static String loginMessage = "";
+    public static String HUB_UUID = "111";
+    public static String USERNAME = "User";
+    public static String PASSWORD = "123";
 
-    public static void config() {
-        JsonObject jsonPacket = new JsonObject();
-        jsonPacket.addProperty("type", "LOGIN");
-        jsonPacket.addProperty("uuid", HUB_UUID);
-        jsonPacket.addProperty("username", USERNAME);
-        jsonPacket.addProperty("password", PASSWORD);
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
-        loginMessage = gson.toJson(jsonPacket);
+    public static void setTestData(String UUID, int port, String username, String password) {
+        HUB_UUID = UUID;
+        PORT = port;
+        USERNAME = username;
+        PASSWORD = password;
     }
+
 }
