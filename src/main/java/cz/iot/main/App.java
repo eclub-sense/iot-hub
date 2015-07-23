@@ -25,7 +25,7 @@ public class App {
                 if (line.equalsIgnoreCase("login")) {
                     hub.getClient().sendString(MessageManager.JSONFromMessage
                             (new HubLoginMsg(Constants.USERNAME, Constants.PASSWORD)));
-                } else if (line.equalsIgnoreCase("reconnect")) {
+                } else if (line.equalsIgnoreCase("connect")) {
                     hub.getClient().setupSession();
                 } else if (line.equalsIgnoreCase("close")) {
                     hub.getClient().closeSession();

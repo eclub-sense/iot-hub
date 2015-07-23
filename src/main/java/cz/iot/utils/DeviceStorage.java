@@ -3,6 +3,8 @@ package cz.iot.utils;
 import cz.iot.local.Identifier;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 
+import java.util.logging.Level;
+
 /**
  * Created by Michal on 20. 7. 2015.
  */
@@ -19,7 +21,7 @@ public class DeviceStorage {
     }
 
     public static void registerDevice(Identifier id) {
-        System.out.println("Registering device with uuid: "+ id.getID());
+        Constants.LOGGER.log(Level.INFO, "Registering device with uuid: "+id.getID());
         devices.add(id);
     }
 

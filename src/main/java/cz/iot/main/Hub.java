@@ -41,7 +41,7 @@ public class Hub {
         packetManager = new PacketManager(hubClient);
 
         //Setup collector
-        manager = new FakeDataManager(packetManager);
+        manager = new SerialDataManager(packetManager);
 
         new Thread(server).start();
         new Thread(hubClient).start();

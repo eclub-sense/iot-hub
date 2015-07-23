@@ -25,16 +25,19 @@ public class WebSocket extends WebSocketAdapter {
     @Override
     public void onWebSocketConnect(Session sess) {
         super.onWebSocketConnect(sess);
-        System.out.println("Socket Connected: " + sess);
+        //System.out.println("Socket Connected: " + sess);
+        Constants.LOGGER.log(Level.INFO, "Websocket created! Connection established");
     }
 
     @Override
     public void onWebSocketText(String message) {
         super.onWebSocketText(message);
-        System.out.println("Received TEXT message: " + message);
+        //System.out.println("Received TEXT message: " + message);
 
         HubMessage msg = MessageManager.messageFromJSON(message);
-        System.out.println(msg);
+
+        Constants.LOGGER.log(Level.INFO, "MSG:RCV: "+message);
+
         if(msg != null) {
             switch (msg.getType()) {
                 case NEW:

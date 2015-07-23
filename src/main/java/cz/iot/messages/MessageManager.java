@@ -21,6 +21,7 @@ public class MessageManager {
 		switch ((String)type) {
 			case "NEW" : return gson.fromJson(json, HubMessage.class);
 			case "LOGIN_ACK" :  return gson.fromJson(json, HubMessage.class);
+			case "WRITE" : return gson.fromJson(json, HubDataMsg.class);
 			default : return null;
 		}
 	}

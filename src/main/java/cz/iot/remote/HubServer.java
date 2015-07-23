@@ -37,7 +37,6 @@ public class HubServer implements Runnable{
         try {
             server.start();
             //server.dump(System.err);
-            server.join();
         } catch (Exception e) {
             Constants.LOGGER.log(Level.INFO, "Could not start the server!");
             return false;
@@ -58,7 +57,13 @@ public class HubServer implements Runnable{
     }
 
     public void run() {
-        if(initServer())
-            Constants.LOGGER.log(Level.INFO, "Server running at "+this.port);
+        if(initServer()) {
+            Constants.LOGGER.log(Level.INFO, "Server running at " + this.port);
+            try {
+                server.join();
+            } catch (InterruptedException e) {
+                Constants.LOGGER.log(Level.WARNING, "Server crashed!");
+            }
+        }
     }
 }

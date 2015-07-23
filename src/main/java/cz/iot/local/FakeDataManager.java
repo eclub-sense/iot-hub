@@ -41,7 +41,7 @@ public class FakeDataManager implements DataManager {
     @Override
     public void collectData() {
         for(int i=0;i<9;i++){
-            if(randomGenerator.nextInt(2)==2){
+            if(randomGenerator.nextInt(3)==2){
                 manager.put(packetArrayList.get(i));
             }
         }

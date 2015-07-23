@@ -28,10 +28,6 @@ public class HubMessage {
 		return uuid;
 	}
 	
-	public int getIntUuid() {
-		return Integer.parseInt(uuid);
-	}
-	
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
